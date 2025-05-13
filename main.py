@@ -51,9 +51,8 @@ medium_button = Button(WINDOW_WIDTH//2 - button_width//2, start_y + button_heigh
 hard_button = Button(WINDOW_WIDTH//2 - button_width//2, start_y + 2 * (button_height + spacing),
                     button_width, button_height, "Hard", RED)
 
-# Game loop
-level = None
 running = True
+level = None
 
 while running:
     for event in pygame.event.get():
@@ -88,5 +87,7 @@ while running:
 
 pygame.quit()
 
-# The selected difficulty level is stored in the 'level' variable
-print(f"Selected difficulty: {level}")
+# Ask for the username
+if level:
+    user_name = input("What is your name? ")
+    print(f"Hello {user_name}, you selected {level} difficulty!")
