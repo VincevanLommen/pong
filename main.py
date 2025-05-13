@@ -3,6 +3,10 @@ import sys
 
 # Initialize Pygame
 pygame.init()
+pygame.font.init()  # Initialize the font module
+
+font = pygame.font.Font(None, 36)
+
 
 # Constants
 WINDOW_WIDTH = 800
