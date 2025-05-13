@@ -11,6 +11,9 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 BLUE = (0, 100, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+ORANGE = (255, 165, 0)
 
 # Set up the display
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -42,11 +45,11 @@ spacing = 20
 start_y = WINDOW_HEIGHT // 2 - (3 * button_height + 2 * spacing) // 2
 
 easy_button = Button(WINDOW_WIDTH//2 - button_width//2, start_y, 
-                    button_width, button_height, "Easy", GRAY)
+                    button_width, button_height, "Easy", GREEN)
 medium_button = Button(WINDOW_WIDTH//2 - button_width//2, start_y + button_height + spacing,
-                      button_width, button_height, "Medium", GRAY)
+                      button_width, button_height, "Medium", ORANGE)
 hard_button = Button(WINDOW_WIDTH//2 - button_width//2, start_y + 2 * (button_height + spacing),
-                    button_width, button_height, "Hard", GRAY)
+                    button_width, button_height, "Hard", RED)
 
 # Game loop
 level = None
