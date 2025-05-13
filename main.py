@@ -88,6 +88,29 @@ while running:
 pygame.quit()
 
 # Ask for the username
-if level:
-    user_name = input("What is your name? ")
-    print(f"Hello {user_name}, you selected {level} difficulty!")
+input_active = True
+user_name = ""
+input_rect = pygame.Rect(WINDOW_WIDTH//2 - 100, start_y + 3 * (button_height + spacing), 200, 50)
+font = pygame.font.Font(None, 36)
+
+while input_active:
+    screen.fill(WHITE)
+    
+    # Draw input box
+    pygame.draw.rect(screen, ORANGE, input_rect, 2)
+    input_surface = font.render(user_name, True, BLACK)
+    screen.blit(input_surface, (input_rect.x + 10, input_rect.y + 10))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            input_active = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                input_active = False  # Confirm input
+                print(f"Hello {user_name}, you selected {level} difficulty!")
+            elif event.key == pygame.K_BACKSPACE:
+                user_name = user_name[:-1]  # Remove last character
+            else:
+                user_name += event.unicode  # Add typed character
+
+    pygame.display.flip()
