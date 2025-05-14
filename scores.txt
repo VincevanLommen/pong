@@ -1,0 +1,3 @@
+Frank;Easy;1.346
+Test;Medium;0.682
+Test;Hard;0.935
