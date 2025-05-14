@@ -150,20 +150,25 @@ while restart:
         ball_speed = 1.5
     elif level == "Hard":
         ball_speed = 2
-random_angle_deg = random.uniform(105, 255)  #Niet naar rechts gaan
-random_angle_rad = math.radians(random_angle_deg)
-ball_dx = ball_speed * math.cos(random_angle_rad)
-ball_dy = ball_speed * math.sin(random_angle_rad)
-    if ball_dx <= 0:
-        ball_dx = abs(ball_dx)
+
+ # bal plaatsen
+    ball_x = BORDER_THICKNESS + ball_radius
+    ball_y = random.randint(y_min, y_max)
+    random_angle_deg = random.uniform(-45, 45)
+    random_angle_rad = math.radians(random_angle_deg)
+    ball_dx = ball_speed * math.cos(random_angle_rad)
+    ball_dy = ball_speed * math.sin(random_angle_rad)
+
+    if ball_dx < 0:
+        ball_dx = -ball_dx
 
     #GROOTTE PADDLE
     if level == "Easy":
-        paddle_height = 50
+        paddle_height = 70
     elif level == "Medium":
-        paddle_height = 40
+        paddle_height = 50
     elif level == "Hard":
-        paddle_height = 30
+        paddle_height = 40
     paddle_width = 10
     paddle_x = WINDOW_SIZE - paddle_width
     paddle_y = (WINDOW_SIZE - paddle_height) // 2
@@ -188,6 +193,11 @@ ball_dy = ball_speed * math.sin(random_angle_rad)
         lives_text = font.render("Lives: " + str(lives), True, BLACK)
         screen.blit(lives_text, (WINDOW_SIZE - 100, 10))
     
+        #Timer
+        current_time = (pygame.time.get_ticks() - start_time) / 1000.0
+        timer_text = font.render(f"Time: {current_time:.2f} sec", True, BLACK)
+        screen.blit(timer_text, (10, 10))
+
         # Peddel controll
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -195,11 +205,11 @@ ball_dy = ball_speed * math.sin(random_angle_rad)
                 restart = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
-                    paddle_y -= 20
+                    paddle_y -= 35
                     if paddle_y < 0:
                         paddle_y = 0
                 elif event.key == pygame.K_s:
-                    paddle_y += 20
+                    paddle_y += 35
                     if paddle_y > WINDOW_SIZE - paddle_height:
                         paddle_y = WINDOW_SIZE - paddle_height
 
@@ -323,8 +333,8 @@ ball_dy = ball_speed * math.sin(random_angle_rad)
             screen.blit(score_time, (table_x + col_width + 10, table_y + (idx+1)*row_height + 5))
             screen.blit(score_level, (table_x + 2 * col_width + 10, table_y + (idx+1)*row_height + 5))
         
-        # Voeg hier de spelerinfo (naam en timer) toe
-        player_info = font.render(f"Score: {user_name}  {elapsed_time:.2f} sec", True, BLACK)
+        #END INFO
+        player_info = font.render(f"Score: {user_name}  {elapsed_time:.2f} sec in {level}", True, BLACK)
         player_info_rect = player_info.get_rect(center=(WINDOW_SIZE//2, table_y + table_height + 20))
         screen.blit(player_info, player_info_rect)
         
