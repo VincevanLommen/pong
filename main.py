@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import math
 
 # Initialize Pygame
 pygame.init()
@@ -15,7 +16,7 @@ ORANGE = (255, 165, 0)
 RED = (255, 0, 0)
 BORDER_THICKNESS = 10
 
-ball_radius = 10
+ball_radius = 4        # Diameter is 8
 ball_speed = 1
 ball_dx = ball_speed
 ball_dy = ball_speed
@@ -141,7 +142,7 @@ while restart:
 
     ball_x = random.randint(x_min, x_max)
     ball_y = random.randint(y_min, y_max)
-
+    
     #ball speed
     if level == "Easy":
         ball_speed = 1
@@ -149,8 +150,24 @@ while restart:
         ball_speed = 1.5
     elif level == "Hard":
         ball_speed = 2
-    ball_dx = ball_speed
-    ball_dy = ball_speed
+random_angle_deg = random.uniform(105, 255)  #Niet naar rechts gaan
+random_angle_rad = math.radians(random_angle_deg)
+ball_dx = ball_speed * math.cos(random_angle_rad)
+ball_dy = ball_speed * math.sin(random_angle_rad)
+    if ball_dx <= 0:
+        ball_dx = abs(ball_dx)
+
+    #GROOTTE PADDLE
+    if level == "Easy":
+        paddle_height = 50
+    elif level == "Medium":
+        paddle_height = 40
+    elif level == "Hard":
+        paddle_height = 30
+    paddle_width = 10
+    paddle_x = WINDOW_SIZE - paddle_width
+    paddle_y = (WINDOW_SIZE - paddle_height) // 2
+
 
     #create lives
     lives = 3
@@ -170,6 +187,21 @@ while restart:
     
         lives_text = font.render("Lives: " + str(lives), True, BLACK)
         screen.blit(lives_text, (WINDOW_SIZE - 100, 10))
+    
+        # Peddel controll
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                restart = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    paddle_y -= 20
+                    if paddle_y < 0:
+                        paddle_y = 0
+                elif event.key == pygame.K_s:
+                    paddle_y += 20
+                    if paddle_y > WINDOW_SIZE - paddle_height:
+                        paddle_y = WINDOW_SIZE - paddle_height
 
         ball_x += ball_dx
         ball_y += ball_dy
@@ -180,36 +212,59 @@ while restart:
             ball_dy = abs(ball_dy)
         if ball_y + ball_radius >= WINDOW_SIZE - BORDER_THICKNESS:
             ball_dy = -abs(ball_dy)
+#wiskunde
         if ball_x + ball_radius >= WINDOW_SIZE:
-            lives -= 1
-            if lives <= 0:
-                running = False
+            if ball_y >= paddle_y and ball_y <= paddle_y + paddle_height:
+    
+                paddle_center = paddle_y + paddle_height / 2.0
+                offset = ball_y - paddle_center
+                segment = (paddle_height / 2.0) / 5.0
+                if abs(offset) < 0.0001:
+                    bounce_angle_deg = 0
+                elif abs(offset) <= 1 * segment:
+                    bounce_angle_deg = 15
+                elif abs(offset) <= 2 * segment:
+                    bounce_angle_deg = 30
+                elif abs(offset) <= 3 * segment:
+                    bounce_angle_deg = 45
+                elif abs(offset) <= 4 * segment:
+                    bounce_angle_deg = 60
+                else:
+                    bounce_angle_deg = 75
+                if offset < 0:
+                    bounce_angle_deg = -bounce_angle_deg
+                bounce_angle_rad = math.radians(bounce_angle_deg)
+                ball_dx = -ball_speed * math.cos(bounce_angle_rad)
+                ball_dy = ball_speed * math.sin(bounce_angle_rad)
             else:
-                ball_x = random.randint(x_min, x_max)
-                ball_y = random.randint(y_min, y_max)
-                ball_dx = ball_speed
-                ball_dy = ball_speed
+                lives -= 1
+                if lives <= 0:
+                    running = False
+                else:
+                    ball_x = random.randint(x_min, x_max)
+                    ball_y = random.randint(y_min, y_max)
+                    random_angle_deg = random.uniform(-75, 75)
+                    random_angle_rad = math.radians(random_angle_deg)
+                    ball_dx = ball_speed * math.cos(random_angle_rad)
+                    ball_dy = ball_speed * math.sin(random_angle_rad)
+                    if ball_dx <= 0:
+                        ball_dx = abs(ball_dx)
 
-        pygame.draw.circle(screen, theme_color, (ball_x, ball_y), ball_radius)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                restart = False
+        pygame.draw.circle(screen, theme_color, (int(ball_x), int(ball_y)), ball_radius)
+        pygame.draw.rect(screen, theme_color, (paddle_x, int(paddle_y), paddle_width, paddle_height))
 
         pygame.display.flip()
     
     if not restart:
         break
 
-#Stop timer
+    #Stop timer
     end_time = pygame.time.get_ticks()
     elapsed_time = (end_time - start_time) / 1000.0
 
-#File save
+    #File save
     with open("scores.txt", "a") as f:
         f.write(f"{user_name};{level};{elapsed_time}\n")
-
 
     scores = []
     try:
@@ -225,7 +280,6 @@ while restart:
                         pass
     except:
         pass
-
 
     scores.sort(key=lambda x: x[2], reverse=True)
     top_scores = scores[:3]
@@ -253,7 +307,6 @@ while restart:
         pygame.draw.line(screen, BLACK, (table_x + col_width, table_y), (table_x + col_width, table_y + table_height), 2)
         pygame.draw.line(screen, BLACK, (table_x + 2 * col_width, table_y), (table_x + 2 * col_width, table_y + table_height), 2)
         
-    
         header_name = font.render("Naam", True, BLACK)
         header_time = font.render("Tijd", True, BLACK)
         header_level = font.render("Level", True, BLACK)
@@ -270,7 +323,11 @@ while restart:
             screen.blit(score_time, (table_x + col_width + 10, table_y + (idx+1)*row_height + 5))
             screen.blit(score_level, (table_x + 2 * col_width + 10, table_y + (idx+1)*row_height + 5))
         
-        #REPLAY
+        # Voeg hier de spelerinfo (naam en timer) toe
+        player_info = font.render(f"Score: {user_name}  {elapsed_time:.2f} sec", True, BLACK)
+        player_info_rect = player_info.get_rect(center=(WINDOW_SIZE//2, table_y + table_height + 20))
+        screen.blit(player_info, player_info_rect)
+        
         retry_button.draw(screen)
         
         for event in pygame.event.get():
