@@ -1,3 +1,20 @@
 Frank;Hard;123,45
 Vince;Medium;5.682
 Test;Hard;0.935
+DanDan;Easy;5.126
+u moeder;Medium;2.822
+your gay;Medium;2.282
+Vince;Easy;26.855
+Nigger;Hard;1.368
+Hard;Hard;1.462
+zout;Hard;1.473
+ww;Hard;1.007
+sss;Easy;78.492
+Test;Hard;1.837
+Test;Hard;4.817
+Hard;Hard;5.022
+Hard;Hard;8.657
+milo;Hard;3.502
+d;Medium;8.231
+q;Hard;17.911
+n iggq;Hard;1.481

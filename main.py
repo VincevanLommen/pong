@@ -147,9 +147,9 @@ while restart:
     if level == "Easy":
         ball_speed = 1
     elif level == "Medium":
-        ball_speed = 1.5
+        ball_speed = 1.25
     elif level == "Hard":
-        ball_speed = 2
+        ball_speed = 1.5
 
  # bal plaatsen
     ball_x = BORDER_THICKNESS + ball_radius
@@ -166,9 +166,9 @@ while restart:
     if level == "Easy":
         paddle_height = 70
     elif level == "Medium":
-        paddle_height = 50
+        paddle_height = 65
     elif level == "Hard":
-        paddle_height = 40
+        paddle_height = 60
     paddle_width = 10
     paddle_x = WINDOW_SIZE - paddle_width
     paddle_y = (WINDOW_SIZE - paddle_height) // 2
