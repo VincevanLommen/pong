@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -13,6 +14,12 @@ GREEN = (0, 255, 0)
 ORANGE = (255, 165, 0)
 RED = (255, 0, 0)
 BORDER_THICKNESS = 10
+
+
+ball_radius = 10
+ball_speed = 1
+ball_dx = ball_speed
+ball_dy = ball_speed
 
 # Set up the display
 screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
@@ -50,7 +57,6 @@ hard_button = Button(WINDOW_SIZE//2 - button_width//2, start_y + 2 * (button_hei
 running = True
 level = None
 theme_color = WHITE 
-
 
 #ASK LEVEL
 while running:
@@ -115,25 +121,44 @@ if level:
 
         pygame.display.flip()
 
-# Define the field position (centered)
+
 field_x = 0
 field_y = 0
 
+x_min = BORDER_THICKNESS + ball_radius
+x_max = WINDOW_SIZE - ball_radius
+y_min = BORDER_THICKNESS + ball_radius
+y_max = WINDOW_SIZE - BORDER_THICKNESS - ball_radius
 
+ball_x = random.randint(x_min, x_max)
+ball_y = random.randint(y_min, y_max)
 
 #CREATE FIELD
 running = True
 while running:
     screen.fill(WHITE)
 
-    # Draw theme-colored borders (top, bottom, left)
     pygame.draw.rect(screen, theme_color, (field_x, field_y, WINDOW_SIZE, BORDER_THICKNESS))  # Top
     pygame.draw.rect(screen, theme_color, (field_x, field_y + WINDOW_SIZE - BORDER_THICKNESS, WINDOW_SIZE, BORDER_THICKNESS))  # Bottom
     pygame.draw.rect(screen, theme_color, (field_x, field_y, BORDER_THICKNESS, WINDOW_SIZE))  # Left
 
-    # Draw the main field inside the borders (black outline)
     pygame.draw.rect(screen, BLACK, (field_x + BORDER_THICKNESS, field_y + BORDER_THICKNESS, 
                                      WINDOW_SIZE - BORDER_THICKNESS, WINDOW_SIZE - 2 * BORDER_THICKNESS), 2)
+
+
+    ball_x += ball_dx
+    ball_y += ball_dy
+
+    if ball_x - ball_radius <= BORDER_THICKNESS:
+        ball_dx = abs(ball_dx)
+    if ball_x + ball_radius >= WINDOW_SIZE:
+        ball_dx = -abs(ball_dx)
+    if ball_y - ball_radius <= BORDER_THICKNESS:
+        ball_dy = abs(ball_dy)
+    if ball_y + ball_radius >= WINDOW_SIZE - BORDER_THICKNESS:
+        ball_dy = -abs(ball_dy)
+
+    pygame.draw.circle(screen, theme_color, (ball_x, ball_y), ball_radius)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
